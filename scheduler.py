@@ -14,7 +14,7 @@ def monitor_and_send_alerts():
         if latest_air_quality_data:
             current_pm2_5 = latest_air_quality_data.pm2_5
             current_pm10 = latest_air_quality_data.pm10
-            current_aqi = latest_air_quality_data.aqi
+            current_aqi = latest_air_quality_data.aqi.aqi
 
             for subscription in subscriptions:
                 pm2_5_threshold = subscription.pm2_5_threshold
