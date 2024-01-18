@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 import shortuuid
-from app.utils.helpers import is_valid_email
+from app.utils.email_utils import is_valid_email
 
 db = SQLAlchemy()
 
@@ -9,11 +9,13 @@ class Subscriptions(db.Model):
     email = db.Column(db.String(50))
     pm2_5_threshold = db.Column(db.Numeric, default=35)
     pm10_threshold = db.Column(db.Numeric, default=50)
-    alert_sent = db.Column(db.Boolean, default=False)
+    alert_sent_pm10 = db.Column(db.Boolean, default=False)
     aqi_threshold = db.Column(db.Numeric, default=100)
+    alert_sent_aqi = db.Column(db.Boolean, default=False)
+    alert_sent_pm2_5 = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
-        return f'<Subscriptions(id={self.id}, email={self.email}, pm2_5_threshold={self.pm2_5_threshold}, pm10_threshold={self.pm10_threshold}, aqi_threshold={self.aqi_threshold}, alert_sent={self.alert_sent})>'
+        return f'<Subscriptions(id={self.id}, email={self.email}, pm2_5_threshold={self.pm2_5_threshold}, pm10_threshold={self.pm10_threshold}, aqi_threshold={self.aqi_threshold}, alert_sent_pm2_5={self.alert_sent_pm2_5}, alert_sent_pm10={self.alert_sent_pm10}, alert_sent_aqi={self.alert_sent_aqi})>'
     
     @classmethod
     def create_new_subscriber(cls, email):
