@@ -65,3 +65,12 @@ class Subscriptions(db.Model):
             self.alert_sent_pm10 = value
         elif indicator == 'AQI':
             self.alert_sent_aqi = value
+            
+    def get_alert_sent(self, indicator):
+        if indicator == 'PM2.5':
+            return self.alert_sent_pm2_5
+        elif indicator == 'PM10':
+            return self.alert_sent_pm10
+        elif indicator == 'AQI':
+            return self.alert_sent_aqi
+        

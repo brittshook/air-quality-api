@@ -22,34 +22,34 @@ def monitor_and_send_alerts():
                 aqi_threshold = subscription.aqi_threshold
                 
                 if current_pm2_5 > pm2_5_threshold:
-                    if not subscription.alert_sent_pm2_5:
+                    if not subscription.get_alert_sent('PM2.5'):
                         send_alert_email(subscription.email, 'alert_message', 'PM2.5', pm2_5_threshold, current_pm2_5)
                         subscription.set_alert_sent('PM2.5', True)
                         db.session.commit()
                 elif current_pm2_5 <= pm2_5_threshold:
-                    if subscription.alert_sent_pm2_5:
+                    if subscription.get_alert_sent('PM2.5'):
                         send_alert_email(subscription.email, 'clear_alert_message', 'PM2.5', pm2_5_threshold, current_pm2_5)
                         subscription.set_alert_sent('PM2.5', False)
                         db.session.commit()
 
                 if current_pm10 > pm10_threshold:
-                    if not subscription.alert_sent_pm10:
+                    if not subscription.get_alert_sent('PM10'):
                         send_alert_email(subscription.email, 'alert_message', 'PM10', pm10_threshold, current_pm10)
                         subscription.set_alert_sent('PM10', True)
                         db.session.commit()
                 elif current_pm10 <= pm10_threshold:
-                    if subscription.alert_sent_pm10:
+                    if subscription.get_alert_sent('PM10'):
                         send_alert_email(subscription.email, 'clear_alert_message', 'PM10', pm10_threshold, current_pm10)
                         subscription.set_alert_sent('PM10', False)
                         db.session.commit()
                         
                 if current_aqi > aqi_threshold:
-                    if not subscription.alert_sent_aqi:
+                    if not subscription.get_alert_sent('AQI'):
                         send_alert_email(subscription.email, 'alert_message', 'AQI', aqi_threshold, current_aqi)
                         subscription.set_alert_sent('AQI', True)
                         db.session.commit()
                 elif current_aqi <= aqi_threshold:
-                    if subscription.alert_sent_aqi:
+                    if subscription.get_alert_sent('AQI'):
                         send_alert_email(subscription.email, 'clear_alert_message', 'AQI', aqi_threshold, current_aqi)
                         subscription.set_alert_sent('AQI', False)
                         db.session.commit()
