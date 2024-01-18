@@ -48,13 +48,20 @@ class Subscriptions(db.Model):
 
     
     def update_thresholds(self, pm2_5_threshold=None, pm10_threshold=None, aqi_threshold=None):
-        if pm2_5_threshold is not None:
+        if pm2_5_threshold is not None and pm2_5_threshold > 0:
             self.pm2_5_threshold = pm2_5_threshold
-        if pm10_threshold is not None:
+        if pm10_threshold is not None and pm10_threshold > 0:
             self.pm10_threshold = pm10_threshold
-        if aqi_threshold is not None:
+        if aqi_threshold is not None and aqi_threshold > 0:
             self.aqi_threshold = aqi_threshold
 
         db.session.commit()
-
         return {'id': self.id, 'pm2_5_threshold': self.pm2_5_threshold, 'pm10_threshold': self.pm10_threshold, 'aqi_threshold': self.aqi_threshold}
+    
+    def set_alert_sent(self, indicator, value):
+        if indicator == 'PM2.5':
+            self.alert_sent_pm2_5 = value
+        elif indicator == 'PM10':
+            self.alert_sent_pm10 = value
+        elif indicator == 'AQI':
+            self.alert_sent_aqi = value
