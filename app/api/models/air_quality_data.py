@@ -77,17 +77,12 @@ class AirQualityData(db.Model):
             'pm2_5': latest_entry.pm2_5,
             'pm10': latest_entry.pm10,
             'aqi': latest_entry.aqi
-            }
+        }
 
     @classmethod
-    def get_history(cls, indicator=None, start=None, end=None):
-        first_entry = AirQualityData.query.order_by(AirQualityData.timestamp.asc()).first()
-
-        if not first_entry:
-            raise ValueError("No records available.")
-
-        if end and end < first_entry.timestamp:
-            raise ValueError(f"End time occurs before the timestamp of the first record. End time must be equal to or after {first_entry.timestamp}")
+    def get_history(cls, indicator=None, start=None, end=None, limit=5000, offset=0):
+        if limit < 1 or limit > 5000:
+            raise ValueError(f"Limit must be between 1 and 5000.")
 
         if start and end and start > end:
             raise ValueError("Start time should be before or equal to end time.")
@@ -95,16 +90,19 @@ class AirQualityData(db.Model):
         if start and end:
             records = AirQualityData.query.filter(
                 AirQualityData.timestamp.between(start, end)
-            ).all()
-            return [(entry.timestamp, getattr(entry, indicator)) for entry in records] if indicator else records
-
-        latest_entry = AirQualityData.query.order_by(AirQualityData.timestamp.desc()).first()
-        return [(latest_entry.timestamp, getattr(latest_entry, indicator))] if indicator else {
-            'timestamp': latest_entry.timestamp,
-            'pm2_5': latest_entry.pm2_5,
-            'pm10': latest_entry.pm10,
-            'aqi': latest_entry.aqi
-        }
+            ).limit(limit).offset(offset).all()
+        else:
+            records = AirQualityData.query.filter(AirQualityData).limit(limit).offset(offset).all()
+            
+        if indicator:
+            return [(entry.timestamp, getattr(entry, indicator)) for entry in records]
+        else:
+            return [{
+                'timestamp': entry.timestamp,
+                'pm2_5': entry.pm2_5,
+                'pm10': entry.pm10,
+                'aqi': entry.aqi
+            } for entry in records]
 
 @event.listens_for(AirQualityData, 'after_insert')    
 def after_insert_listener(mapper, connection, target):
