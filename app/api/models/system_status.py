@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from .air_quality_data import db
 
 class SystemStatus(db.Model):
     timestamp = db.Column(db.TIMESTAMP, primary_key=True, default=db.func.current_timestamp())
@@ -14,11 +13,11 @@ class SystemStatus(db.Model):
     
     def system_status(self):
         return {
-            'timestamp': self.timestamp,
+            'timestamp': self.timestamp.isoformat(),
             'status': self.status,
             'sensor_connected': self.sensor_connected,
-            'cpu_usage_percent': self.cpu_usage_percent,
-            'memory_usage_percent': self.memory_usage_percent
+            'cpu_usage_percent': float(self.cpu_usage_percent),
+            'memory_usage_percent': float(self.memory_usage_percent)
         }
     
 

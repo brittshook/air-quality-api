@@ -1,4 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy, func, event
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import event, desc
 from datetime import datetime, timedelta
 from app.utils.aqi_utils import AQI_CATEGORIES
 
@@ -70,17 +71,27 @@ class AirQualityData(db.Model):
             raise ValueError("No records available.")
 
         if indicator:
-            return [(latest_entry.timestamp, getattr(latest_entry, indicator))]
+            return {
+                'timestamp': latest_entry.timestamp.isoformat(),
+                indicator: getattr(latest_entry, indicator) if indicator == 'aqi' else float(getattr(latest_entry, indicator))
+            }
+
 
         return {
-            'timestamp': latest_entry.timestamp,
-            'pm2_5': latest_entry.pm2_5,
-            'pm10': latest_entry.pm10,
+            'timestamp': latest_entry.timestamp.isoformat(),
+            'pm2_5': float(latest_entry.pm2_5),
+            'pm10': float(latest_entry.pm10),
             'aqi': latest_entry.aqi
         }
 
     @classmethod
-    def get_history(cls, indicator=None, start=None, end=None, limit=5000, offset=0):
+    def get_history(cls, indicator=None, start=None, end=None, limit=None, offset=None):
+        limit = limit or 5000
+        offset = offset or 0
+        
+        limit = int(limit)
+        offset = int(offset)
+        
         if limit < 1 or limit > 5000:
             raise ValueError(f"Limit must be between 1 and 5000.")
 
@@ -90,17 +101,19 @@ class AirQualityData(db.Model):
         if start and end:
             records = AirQualityData.query.filter(
                 AirQualityData.timestamp.between(start, end)
-            ).limit(limit).offset(offset).all()
+            ).order_by(desc(AirQualityData.timestamp)).limit(limit).offset(offset).all()
         else:
-            records = AirQualityData.query.filter(AirQualityData).limit(limit).offset(offset).all()
+            records = AirQualityData.query.order_by(desc(AirQualityData.timestamp)).limit(limit).offset(offset).all()
             
         if indicator:
-            return [(entry.timestamp, getattr(entry, indicator)) for entry in records]
+            return [{'timestamp': entry.timestamp.isoformat(), 
+                     indicator: getattr(entry, indicator) if indicator == 'aqi' else float(getattr(entry, indicator)) 
+            } for entry in records]
         else:
             return [{
-                'timestamp': entry.timestamp,
-                'pm2_5': entry.pm2_5,
-                'pm10': entry.pm10,
+                'timestamp': entry.timestamp.isoformat(),
+                'pm2_5': float(entry.pm2_5),
+                'pm10': float(entry.pm10),
                 'aqi': entry.aqi
             } for entry in records]
 
