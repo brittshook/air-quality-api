@@ -59,8 +59,7 @@ class AirQualityData(db.Model):
                     aqi_description = values['description']
                     break
 
-            return {'aqi': aqi, 'category': aqi_category, 'description': aqi_description}
-        return {'aqi': 'Unavailable'}
+            self.aqi = {'aqi': aqi, 'category': aqi_category, 'description': aqi_description}
 
     @classmethod
     def get_current(cls, indicator=None):
