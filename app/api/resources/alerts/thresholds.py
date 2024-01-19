@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource
-from ...models import Subscriptions
+from ...models.subscriptions import Subscriptions
 
 
 class Thresholds(Resource):
