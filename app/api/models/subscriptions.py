@@ -45,8 +45,14 @@ class Subscriptions(db.Model):
         else:
             raise ValueError('Invalid email address. Email addresses must be in the format: hey@example.com')
 
-    
     def update_thresholds(self, pm2_5_threshold=None, pm10_threshold=None, aqi_threshold=None):
+        if pm2_5_threshold is not None:
+            pm2_5_threshold = float(pm2_5_threshold)
+        if pm10_threshold is not None:
+            pm10_threshold = float(pm10_threshold)
+        if aqi_threshold is not None:
+            aqi_threshold = float(aqi_threshold)
+        
         if (
         (pm2_5_threshold is not None and pm2_5_threshold <= 0) or
         (pm10_threshold is not None and pm10_threshold <= 0) or
@@ -64,7 +70,12 @@ class Subscriptions(db.Model):
             self.aqi_threshold = aqi_threshold
 
         db.session.commit()
-        return {'id': self.id, 'pm2_5_threshold': self.pm2_5_threshold, 'pm10_threshold': self.pm10_threshold, 'aqi_threshold': self.aqi_threshold}
+        return {
+            'id': self.id, 
+            'pm2_5_threshold': float(self.pm2_5_threshold), 
+            'pm10_threshold': float(self.pm10_threshold), 
+            'aqi_threshold': float(self.aqi_threshold)
+        }
     
     def set_alert_sent(self, indicator, value):
         if indicator == 'pm2_5':
