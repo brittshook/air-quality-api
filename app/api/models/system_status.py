@@ -10,7 +10,16 @@ class SystemStatus(db.Model):
     memory_usage_percent = db.Column(db.Numeric)
 
     def __repr__(self):
-        return f'<SystemStatus(timestamp={self.timestamp}, status={self.status}, sensor_connected={self.sensor_connected}, pm10_threshold={self.pm10_threshold}, cpu_usage_percent={self.cpu_usage_percent}, memory_usage_percent={self.memory_usage_percent})>'
+        return f'<SystemStatus(timestamp={self.timestamp}, status={self.status}, sensor_connected={self.sensor_connected}, cpu_usage_percent={self.cpu_usage_percent}, memory_usage_percent={self.memory_usage_percent})>'
+    
+    def system_status(self):
+        return {
+            'timestamp': self.timestamp,
+            'status': self.status,
+            'sensor_connected': self.sensor_connected,
+            'cpu_usage_percent': self.cpu_usage_percent,
+            'memory_usage_percent': self.memory_usage_percent
+        }
     
 
 
