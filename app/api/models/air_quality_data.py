@@ -60,6 +60,7 @@ class AirQualityData(db.Model):
                     break
 
             self.aqi = {'aqi': aqi, 'category': aqi_category, 'description': aqi_description}
+            db.session.commit()
 
     @classmethod
     def get_current(cls, indicator=None):
