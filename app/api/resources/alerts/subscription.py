@@ -2,13 +2,14 @@ from flask import request
 from flask_restful import Resource
 from ...models.subscriptions import Subscriptions
 
-class Subscription(Resource):
+class CreateSubscription(Resource):
     def post(self):
         data = request.get_json()
         email = data.get('email')
         result = Subscriptions.create_new_subscriber(email)
         return result, 201
 
+class ManageSubscription(Resource):
     def put(self, id):
         subscription = Subscriptions.query.get(id)
         
