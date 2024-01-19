@@ -27,7 +27,7 @@ class Subscriptions(db.Model):
             db.session.commit()
             return {'id': new_subscription.id, 'email': new_subscription.email}
         else:
-            return {'error': 'Invalid email address. Email addresses must be in the format: hey@example.com'}
+            raise ValueError('Invalid email address. Email addresses must be in the format: hey@example.com')
     
     @classmethod
     def delete_subscriber(cls, subscription_id):
@@ -44,7 +44,7 @@ class Subscriptions(db.Model):
             db.session.commit()
             return {'id': self.id, 'email': self.email}
         else:
-            return {'error': 'Invalid email address. Email addresses must be in the format: hey@example.com'}
+            raise ValueError('Invalid email address. Email addresses must be in the format: hey@example.com')
 
     
     def update_thresholds(self, pm2_5_threshold=None, pm10_threshold=None, aqi_threshold=None):
@@ -73,4 +73,3 @@ class Subscriptions(db.Model):
             return self.alert_sent_pm10
         elif indicator == 'AQI':
             return self.alert_sent_aqi
-        
