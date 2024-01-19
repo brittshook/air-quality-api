@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from ..models import SystemStatus
+from ..models.system_status import SystemStatus
 from flask import jsonify
 
 class Status(Resource):

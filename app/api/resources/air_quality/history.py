@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource
-from ...models import AirQualityData
+from ...models.air_quality_data import AirQualityData
 from datetime import datetime
 
 class History(Resource):

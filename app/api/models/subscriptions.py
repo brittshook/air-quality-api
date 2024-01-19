@@ -1,8 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 import shortuuid
 from app.utils.email_utils import is_valid_email
-
-db = SQLAlchemy()
+from .air_quality_data import db
 
 class Subscriptions(db.Model):
     id = db.Column(db.String(8), primary_key=True)
