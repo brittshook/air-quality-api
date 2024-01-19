@@ -20,4 +20,4 @@ class AQI(Resource):
         else:
             data = [AirQualityData.get_current(indicator='aqi')]
             
-        return {'aqi': data}, 201
+        return {'aqi': data}, 200

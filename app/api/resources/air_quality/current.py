@@ -3,4 +3,4 @@ from ...models import AirQualityData
 
 class Current(Resource):
     def get(self):
-        return AirQualityData.get_current()
+        return AirQualityData.get_current(), 200

@@ -19,4 +19,4 @@ class History(Resource):
         
         historical_data = AirQualityData.get_history(start=start, end=end, limit=limit, offset=offset)
 
-        return {'historical_data': historical_data}, 201
+        return {'historical_data': historical_data}, 200

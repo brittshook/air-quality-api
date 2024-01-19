@@ -4,7 +4,7 @@ from ...models import Subscriptions
 
 class Subscription(Resource):
     def post(self):
-        data = request.get_json
+        data = request.get_json()
         email = data.get('email')
         result = Subscriptions.create_new_subscriber(email)
         return result, 201
@@ -15,12 +15,12 @@ class Subscription(Resource):
         if not subscription:
             return { 'error': 'Subscription not found'}, 404
         
-        data = request.get_json
+        data = request.get_json()
         new_email = data.get('email')
         
         if new_email:
             result = subscription.update_email(new_email)
-            return result, 201
+            return result, 200
         else:
             return { 'error': 'New email is required'}, 400
         
@@ -32,5 +32,3 @@ class Subscription(Resource):
         else: 
             return { 'error': 'Subscription not found'}, 404
 
-
-        

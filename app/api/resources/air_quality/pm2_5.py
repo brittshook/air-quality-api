@@ -20,4 +20,4 @@ class PM2_5(Resource):
         else:
             data = [AirQualityData.get_current(indicator='pm2_5')]
             
-        return {'pm2_5': data}, 201
+        return {'pm2_5': data}, 200
