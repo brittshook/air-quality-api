@@ -59,17 +59,17 @@ class Subscriptions(db.Model):
         return {'id': self.id, 'pm2_5_threshold': self.pm2_5_threshold, 'pm10_threshold': self.pm10_threshold, 'aqi_threshold': self.aqi_threshold}
     
     def set_alert_sent(self, indicator, value):
-        if indicator == 'PM2.5':
+        if indicator == 'pm2_5':
             self.alert_sent_pm2_5 = value
-        elif indicator == 'PM10':
+        elif indicator == 'pm10':
             self.alert_sent_pm10 = value
-        elif indicator == 'AQI':
+        elif indicator == 'aqi':
             self.alert_sent_aqi = value
             
-    def get_alert_sent(self, indicator):
-        if indicator == 'PM2.5':
+    def alert_sent(self, indicator):
+        if indicator == 'pm2_5':
             return self.alert_sent_pm2_5
-        elif indicator == 'PM10':
+        elif indicator == 'pm10':
             return self.alert_sent_pm10
-        elif indicator == 'AQI':
+        elif indicator == 'aqi':
             return self.alert_sent_aqi
