@@ -46,6 +46,9 @@ class AirQualityData(db.Model):
         
         if limit < 1 or limit > 5000:
             raise ValueError(f"Limit must be between 1 and 5000.")
+        
+        if (start and not end) or (not start and end):
+            raise ValueError("To filter results by specified time range, both start and end must be provided")
 
         if start and end and start > end:
             raise ValueError("Start time should be before or equal to end time.")
