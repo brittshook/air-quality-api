@@ -17,6 +17,7 @@ def create_app():
     
     app.config['SQLALCHEMY_DATABASE_URI'] = config['database_url']
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['PROPAGATE_EXCEPTIONS'] = True
     
     db.init_app(app)
     
@@ -28,8 +29,8 @@ def create_app():
         request.not_found_error = False
             
     @app.errorhandler(ValueError)
-    def handle_value_error(error):
-        return jsonify({"error": str(error)}), 400
+    def handle_value_error(e):
+        return jsonify({"error": str(e)}), 400
     
     @app.errorhandler(404)
     def handle_not_found_error(e):
