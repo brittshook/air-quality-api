@@ -1,8 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import desc
-from app.utils.aqi_utils import AQI_CATEGORIES
-
-db = SQLAlchemy()
+from sqlalchemy import desc, event
+from sqlalchemy.orm import Session
+from datetime import timedelta, datetime
+from .db import db
+from .subscriptions import Subscriptions
+from ...utils.aqi_utils import AQI_CATEGORIES
+from ...utils.email_utils import process_alert
 
 class AirQualityData(db.Model):
     timestamp = db.Column(db.TIMESTAMP, primary_key=True, default=db.func.current_timestamp())
@@ -65,3 +68,52 @@ class AirQualityData(db.Model):
                 'pm10': float(entry.pm10),
                 'aqi': entry.aqi
             } for entry in records]
+    
+    def calculate_aqi(self):
+        twelve_hours_ago = datetime.utcnow() - timedelta(hours=12)
+
+        hourly_data = db.session.query(
+            AirQualityData.timestamp,
+            AirQualityData.pm2_5,
+            AirQualityData.pm10
+        ).filter(
+            AirQualityData.timestamp >= twelve_hours_ago
+        ).all()
+
+        concentrations_pm2_5 = [float(data.pm2_5) for data in hourly_data]
+        concentrations_pm10 = [float(data.pm10) for data in hourly_data]
+
+        range_pm2_5 = max(concentrations_pm2_5) - min(concentrations_pm2_5)
+        range_pm10 = max(concentrations_pm10) - min(concentrations_pm10)
+
+        max_concentration_pm2_5 = max(concentrations_pm2_5)
+        max_concentration_pm10 = max(concentrations_pm10)
+
+        scaled_rate_pm2_5 = range_pm2_5 / max_concentration_pm2_5
+        scaled_rate_pm10 = range_pm10 / max_concentration_pm10
+
+        weight_factor_pm2_5 = max(1 - scaled_rate_pm2_5, 0.5)
+        weight_factor_pm10 = max(1 - scaled_rate_pm10, 0.5)
+
+        nowcast_pm2_5 = sum(
+            (float(data.pm2_5) * (weight_factor_pm2_5 ** i)) for i, data in enumerate(hourly_data)
+        ) / sum(weight_factor_pm2_5 ** i for i in range(len(hourly_data)))
+
+        nowcast_pm10 = sum(
+            (float(data.pm10) * (weight_factor_pm10 ** i)) for i, data in enumerate(hourly_data)
+        ) / sum(weight_factor_pm10 ** i for i in range(len(hourly_data)))
+
+        aqi = round(max(nowcast_pm2_5, nowcast_pm10)) if nowcast_pm2_5 and nowcast_pm10 else None
+        
+        if aqi:
+            aqi_category = None
+            aqi_description = None
+
+            for category, values in AQI_CATEGORIES.items():
+                if values['min'] <= aqi <= values['max']:
+                    aqi_category = category
+                    aqi_description = values['description']
+                    break
+
+            self.aqi = {'aqi': aqi, 'category': aqi_category, 'description': aqi_description}
+            return aqi
