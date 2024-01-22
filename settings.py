@@ -9,8 +9,6 @@ config = {
     'db_user': os.getenv('DB_USER'),
     'db_password': os.getenv('DB_PASSWORD'),
     'db_port': os.getenv('DB_PORT'),
-    'smtp_email': os.getenv('SMTP_EMAIL'),
-    'smtp_password': os.getenv('SMTP_PASSWORD'),
-    'smtp_server': os.getenv('SMTP_SERVER'),
-    'smtp_port': os.getenv('SMTP_PORT')
+    'brevo_api_key': os.getenv('BREVO_API_KEY'),
+    'admin_api_key': os.getenv('ADMIN_API_KEY'),
 }
