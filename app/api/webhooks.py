@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from datetime import datetime
 import traceback
 from app.api.models.air_quality_data import AirQualityData 
 from app.api.models.system_status import SystemStatus 
@@ -20,13 +21,13 @@ def handle_data_webhook():
         return jsonify({"error": "Unauthorized"}), 401
     
     data = request.get_json()
-    timestamp = data.get('timestamp')
-    pm2_5 = float(data.get('pm2_5'))
-    pm10 = float(data.get('pm10'))
-    status = data.get('status')
-    sensor_connected = data.get('sensor_connected')
-    cpu_usage_percent = float(data.get('cpu_usage'))
-    memory_usage_percent = float(data.get('memory_usage'))
+    timestamp = data.get('timestamp') or datetime.utcnow()
+    pm2_5 = float(data.get('pm2_5', None))
+    pm10 = float(data.get('pm10', None))
+    status = data.get('status', 'unhealthy')
+    sensor_connected = data.get('sensor_connected', False)
+    cpu_usage_percent = float(data.get('cpu_usage', None))
+    memory_usage_percent = float(data.get('memory_usage', None))
 
     air_quality_data = AirQualityData(timestamp=timestamp, pm2_5=pm2_5, pm10=pm10)
     aqi = air_quality_data.calculate_aqi()

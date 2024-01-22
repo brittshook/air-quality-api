@@ -82,6 +82,9 @@ class AirQualityData(db.Model):
 
         concentrations_pm2_5 = [float(data.pm2_5) for data in hourly_data]
         concentrations_pm10 = [float(data.pm10) for data in hourly_data]
+        
+        if not concentrations_pm2_5 or not concentrations_pm10:
+            return None
 
         range_pm2_5 = max(concentrations_pm2_5) - min(concentrations_pm2_5)
         range_pm10 = max(concentrations_pm10) - min(concentrations_pm10)
