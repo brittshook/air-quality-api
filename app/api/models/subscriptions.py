@@ -1,7 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
 import shortuuid
-from app.utils.email_utils import is_valid_email
-from .air_quality_data import db
+from .db import db
+from ...utils.email_utils import is_valid_email
 
 class Subscriptions(db.Model):
     id = db.Column(db.String(8), primary_key=True)
@@ -18,15 +17,18 @@ class Subscriptions(db.Model):
     
     @classmethod
     def create_new_subscriber(cls, email):
-        if is_valid_email(email):
+        existing_subscription = cls.query.filter_by(email=email).first()
+        
+        if existing_subscription:
+            raise ValueError('Email address already exists in the database')
+        elif not is_valid_email(email):
+            raise ValueError('Invalid email address. Email addresses must be in the format: hey@example.com')
+        else:
             unique_id = str(shortuuid.uuid()[:8])
-
             new_subscription = cls(id=unique_id, email=email)
             db.session.add(new_subscription)
             db.session.commit()
             return {'id': new_subscription.id, 'email': new_subscription.email}
-        else:
-            raise ValueError('Invalid email address. Email addresses must be in the format: hey@example.com')
     
     @classmethod
     def delete_subscriber(cls, subscription_id):
