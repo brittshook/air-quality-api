@@ -21,7 +21,7 @@ class AirQualityData(db.Model):
         latest_entry = AirQualityData.query.order_by(AirQualityData.timestamp.desc()).first()
 
         if not latest_entry:
-            raise ValueError("No records available.")
+            return {"message": "No records available."}
 
         if indicator:
             return {

@@ -10,9 +10,6 @@ class PM10(Resource):
         limit = request.args.get('limit')
         offset = request.args.get('offset')
         
-        if (start and not end) or (not start and end):
-            return {'error': 'To filter results by specified time range, both start and end must be provided'}, 400
-        
         if start and end:
             start = datetime.fromisoformat(start)
             end = datetime.fromisoformat(end)
