@@ -15,7 +15,7 @@ from .webhooks import webhooks_bp
 def create_app():
     app = Flask(__name__)
     
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{config["db_user"]}:{config["db_password"]}@{config["db_host"]}:{config["db_port"]}/{config["db_database"]}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = config['database_url']
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     db.init_app(app)
