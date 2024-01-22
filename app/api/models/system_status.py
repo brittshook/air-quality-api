@@ -1,5 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-from .air_quality_data import db
+from .db import db
 
 class SystemStatus(db.Model):
     timestamp = db.Column(db.TIMESTAMP, primary_key=True, default=db.func.current_timestamp())
