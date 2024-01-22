@@ -21,7 +21,7 @@ class AirQualityData(db.Model):
         latest_entry = AirQualityData.query.order_by(AirQualityData.timestamp.desc()).first()
 
         if not latest_entry:
-            raise ValueError("No records available.")
+            return {"message": "No records available."}
 
         if indicator:
             return {
@@ -45,10 +45,13 @@ class AirQualityData(db.Model):
         offset = int(offset)
         
         if limit < 1 or limit > 5000:
-            raise ValueError(f"Limit must be between 1 and 5000.")
+            return {"error": "Limit must be between 1 and 5000."}, 400
 
         if start and end and start > end:
-            raise ValueError("Start time should be before or equal to end time.")
+            return {"error": "Start time should be before or equal to end time."}, 400
+        
+        if not start or not end:
+            return {"error": "To filter results by specified time range, both start and end must be provided."}, 400
 
         if start and end:
             records = AirQualityData.query.filter(

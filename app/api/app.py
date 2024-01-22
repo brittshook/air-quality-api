@@ -28,8 +28,8 @@ def create_app():
         request.not_found_error = False
             
     @app.errorhandler(ValueError)
-    def handle_value_error(error):
-        return jsonify({"error": str(error)}), 400
+    def handle_value_error(e):
+        return jsonify({"error": str(e)}), 400
     
     @app.errorhandler(404)
     def handle_not_found_error(e):
