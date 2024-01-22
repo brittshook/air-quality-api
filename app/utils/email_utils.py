@@ -3,7 +3,7 @@ import sib_api_v3_sdk
 from settings import config
 
 def is_valid_email(email):
-    pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@(?!test|example|invalid|localhost)[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+    pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(?!test|example|invalid|localhost)[a-zA-Z]{2,}$')
     return bool(pattern.match(email))
 
 def send_email(recipient_email, indicator, threshold, current_level):
