@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_restful import Api
-# from settings import config
+from settings import config
 from .models.db import db
 from .resources.alerts.subscription import CreateSubscription, ManageSubscription
 from .resources.alerts.thresholds import Thresholds
