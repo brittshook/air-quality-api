@@ -47,14 +47,14 @@ def register_resources(api):
     api_base_uri = '/api'
     version = '/v1'
     
-    api.add_resource(CreateSubscription, f'{api_base_uri}{version}/alerts')
-    api.add_resource(ManageSubscription, f'{api_base_uri}{version}/alerts/<string:id>')
+    api.add_resource(CreateSubscription, f'{api_base_uri}{version}/alerts/subscriptions')
+    api.add_resource(ManageSubscription, f'{api_base_uri}{version}//alerts/subscriptions/<string:id>')
     api.add_resource(Thresholds, f'{api_base_uri}{version}/alerts/thresholds/<string:id>')
-    api.add_resource(Current, f'{api_base_uri}{version}/current')
-    api.add_resource(History, f'{api_base_uri}{version}/history')
-    api.add_resource(PM2_5, f'{api_base_uri}{version}/pm2_5')
-    api.add_resource(PM10, f'{api_base_uri}{version}/pm10')
-    api.add_resource(AQI, f'{api_base_uri}{version}/aqi')
+    api.add_resource(Current, f'{api_base_uri}{version}/air_quality')
+    api.add_resource(History, f'{api_base_uri}{version}/air_quality/history')
+    api.add_resource(PM2_5, f'{api_base_uri}{version}/air_quality/pm2_5')
+    api.add_resource(PM10, f'{api_base_uri}{version}/air_quality/pm10')
+    api.add_resource(AQI, f'{api_base_uri}{version}/air_quality/aqi')
     api.add_resource(Status, f'{api_base_uri}{version}/status')
    
 if __name__ == '__main__':
