@@ -51,8 +51,8 @@ class AirQualityData(db.Model):
             raise ValueError("To filter results by specified time range, both start and end must be provided")
 
         if start and end and start > end:
-            raise ValueError("Start time should be before or equal to end time.")
-
+            return {"error": "Start time should be before or equal to end time."}, 400
+      
         if start and end:
             records = AirQualityData.query.filter(
                 AirQualityData.timestamp.between(start, end)
