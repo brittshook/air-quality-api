@@ -20,9 +20,9 @@ class Subscriptions(db.Model):
         existing_subscription = cls.query.filter_by(email=email).first()
         
         if existing_subscription:
-            return {"error": "Email address already exists in the database"}, 400
+            raise ValueError("Email address already exists in the database")
         elif not is_valid_email(email):
-            return {"error": "Invalid email address. Email addresses must be in the format: hey@example.com"}, 400
+            raise ValueError("Invalid email address. Email addresses must be in the format: hey@example.com")
         else:
             unique_id = str(shortuuid.uuid()[:8])
             new_subscription = cls(id=unique_id, email=email)
@@ -45,7 +45,7 @@ class Subscriptions(db.Model):
             db.session.commit()
             return {'id': self.id, 'email': self.email}
         else:
-            return {"error": "Invalid email address. Email addresses must be in the format: hey@example.com"}, 400
+            raise ValueError("Invalid email address. Email addresses must be in the format: hey@example.com")
 
     def update_thresholds(self, pm2_5_threshold=None, pm10_threshold=None, aqi_threshold=None):
         if pm2_5_threshold is not None:
@@ -60,7 +60,7 @@ class Subscriptions(db.Model):
         (pm10_threshold is not None and pm10_threshold <= 0) or
         (aqi_threshold is not None and aqi_threshold <= 0)
         ):
-            return {"error": "Thresholds must be greater than 0"}, 400
+            raise ValueError("Thresholds must be greater than 0")
 
         if pm2_5_threshold is not None:
             self.pm2_5_threshold = pm2_5_threshold
