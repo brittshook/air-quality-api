@@ -2,7 +2,7 @@ from .db import db
 
 class SystemStatus(db.Model):
     timestamp = db.Column(db.TIMESTAMP, primary_key=True, default=db.func.current_timestamp())
-    status = db.Column(db.String(10))
+    status = db.Column(db.String(12))
     sensor_connected = db.Column(db.Boolean)
     cpu_usage_percent = db.Column(db.Numeric)
     memory_usage_percent = db.Column(db.Numeric)
